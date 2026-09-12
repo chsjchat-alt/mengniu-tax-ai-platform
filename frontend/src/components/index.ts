@@ -17,8 +17,6 @@ export { default as Sidebar } from './layout/Sidebar';
 export { default as MainLayout } from './layout/MainLayout';
 export { RiskLegend, LanguageToggle, RiskMapCard } from './riskmap';
 export type { Language } from './riskmap';
-export { BiasRadarChart, BiasCard, ProfileSummary, DisclaimerBanner, BIAS_NAMES, BIAS_DESCRIPTIONS, determineSizeTier, generateSimulatedProfile } from './profile';
-export type { SizeTier } from './profile';
 export {
   SimulationInputForm, PathComparisonChart, LossFrameMessage, CaseStudyCard,
   TrudgeChecklist,

@@ -14,8 +14,8 @@ import { MemoryRouter } from 'react-router-dom'
 
 import Dashboard from '@/pages/Dashboard'
 import { useEnterpriseStore, useRiskStore } from '@/store'
-import { riskScanApi, remediationApi, profileApi, enterpriseApi, dataApi, ssfApi } from '@/api'
-import type { Enterprise, RiskScanResult, ProfileResult, SSFResult } from '@/types'
+import { riskScanApi, remediationApi, enterpriseApi, dataApi } from '@/api'
+import type { Enterprise, RiskScanResult } from '@/types'
 import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 // ── Mock react-router-dom ──
@@ -29,10 +29,8 @@ vi.mock('react-router-dom', async () => {
 vi.mock('@/api', () => ({
   riskScanApi: { scan: vi.fn(), list: vi.fn(), latest: vi.fn() },
   remediationApi: { list: vi.fn() },
-  profileApi: { latest: vi.fn() },
   dataApi: { loadMockData: vi.fn() },
   enterpriseApi: { list: vi.fn(), detail: vi.fn() },
-  ssfApi: { getState: vi.fn(), getSummary: vi.fn() },
 }))
 
 // ── Mock Recharts ──
@@ -101,12 +99,7 @@ function mockApiSuccess() {
   vi.mocked(riskScanApi.list).mockResolvedValue(apiOk({ assessments: [], total: 0 }))
   vi.mocked(riskScanApi.latest).mockResolvedValue(apiOk(makeRiskResult()))
   vi.mocked(remediationApi.list).mockResolvedValue(apiOk({ tasks: [], total: 3 }))
-  vi.mocked(profileApi.latest).mockResolvedValue(apiOk({ deviation_index: 58 } as ProfileResult))
   vi.mocked(dataApi.loadMockData).mockResolvedValue(apiOk({}))
-  vi.mocked(ssfApi.getState).mockResolvedValue(apiOk(null as unknown as SSFResult))
-  vi.mocked(ssfApi.getSummary).mockResolvedValue(
-    { data: { code: 200, message: 'success', data: null } } as unknown as Awaited<ReturnType<typeof ssfApi.getSummary>>,
-  )
 }
 
 // ═══════════════════════════════════════════════════
@@ -179,7 +172,7 @@ describe('Dashboard — 数据展示（API mock 成功 + store 注入 result）'
     expect(mockNavigate).toHaveBeenCalledWith('/risk-map')
   })
 
-  it('偏差指数卡片 → 点击跳转 /profile', async () => {
+  it('偏差指数卡片 → 点击跳转 /remediation', async () => {
     vi.mocked(riskScanApi.scan).mockResolvedValue(apiOk(makeRiskResult()))
     useEnterpriseStore.setState({ currentEnterprise: makeEnterprise() })
     renderDashboard()
@@ -187,9 +180,9 @@ describe('Dashboard — 数据展示（API mock 成功 + store 注入 result）'
     await waitFor(() => {
       expect(screen.getByText('偏差指数')).toBeInTheDocument()
     })
-    const profileCard = screen.getByText('偏差指数').closest('[class*="cursor-pointer"]')!
-    fireEvent.click(profileCard)
-    expect(mockNavigate).toHaveBeenCalledWith('/profile')
+    const deviationCard = screen.getByText('偏差指数').closest('[class*="cursor-pointer"]')!
+    fireEvent.click(deviationCard)
+    expect(mockNavigate).toHaveBeenCalledWith('/remediation')
   })
 
   it('高风险企业 → 显示对应颜色和标签', async () => {

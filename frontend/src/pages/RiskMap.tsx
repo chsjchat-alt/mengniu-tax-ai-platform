@@ -1,8 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useEnterpriseStore, useRiskViewState } from '@/store';
-import { complianceApi, enterpriseApi, riskScanApi } from '@/api';
+import { enterpriseApi, riskScanApi } from '@/api';
 import { RiskLegend, LanguageToggle, RiskMapCard } from '@/components/riskmap';
-import SSFQuadrantChart from '@/components/ssf';
 import { DualCostGauge, TaxBurdenElasticityChart } from '@/components/charts';
 import { LoadingSpinner, EmptyState, TableContainer } from '@/components/common';
 import { Button, Progress, Switch, Table, Tag } from 'antd';
@@ -182,8 +181,9 @@ function RiskMap() {
   const { currentEnterprise } = useEnterpriseStore();
   const { result, isBusy, scanRisk, fetchLatest } = useRiskViewState();
   const [language, setLanguage] = useState<Language>('business');
-  const [nbtData, setNbtData] = useState<NBTInterventionResult | null>(null);
-  const [nbtLoading, setNbtLoading] = useState(false);
+  // 一期边界（V4 §5.4）：NBT 心理干预已移除，恒为空（条件渲染自然走空分支）
+  const nbtData = null as NBTInterventionResult | null;
+  const nbtLoading = false;
   // 合规调整数据（跨模块联动：统一消费后端 compute_compliance_adjusted_risk 结果）
   const [complianceAdj, setComplianceAdj] = useState<ComplianceAdjustedRisk | null>(null);
   // 匹配明细筛选：仅显示未匹配项
@@ -216,22 +216,6 @@ function RiskMap() {
       .then((res) => setTrajectories(res.data.data.trajectories ?? []))
       .catch(() => setTrajectories([]));
   }, [enterpriseId]);
-
-  useEffect(() => {
-    if (!enterpriseId || !result) return;
-    setNbtLoading(true);
-    complianceApi
-      .nbtIntervention(enterpriseId, {
-        enterprise_name: currentEnterprise?.name,
-        industry: currentEnterprise?.industry,
-        overall_risk_level: result.overall_risk_level,
-        overall_risk_score: result.overall_risk_score,
-        dimension_scores: result.dimension_scores,
-      })
-      .then((res) => setNbtData(res.data.data ?? null))
-      .catch(() => setNbtData(null))
-      .finally(() => setNbtLoading(false));
-  }, [enterpriseId, result]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const businessModel: BusinessModel = useMemo(
     () => BUSINESS_MODEL_MAP[currentEnterprise?.industry ?? ''] ?? 'asset_light',
@@ -1066,11 +1050,6 @@ function RiskMap() {
                   : JSON.stringify(result.technical_summary, null, 2)}
               </pre>
             </div>
-          )}
-
-          {/* ═══ SSF 博弈状态四象限定位 ═══ */}
-          {enterpriseId && (
-            <SSFQuadrantChart enterpriseId={enterpriseId} compact />
           )}
         </>
       )}

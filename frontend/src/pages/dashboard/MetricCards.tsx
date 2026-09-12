@@ -115,10 +115,10 @@ export default function MetricCards({
         </div>
       </div>
 
-      {/* 卡片3：偏差指数 vs 基准线 → 心理画像 */}
+      {/* 卡片3：偏差指数 vs 基准线（画像已移除，仅展示占位 '--'，跳转至整改页） */}
       <div
         className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md cursor-pointer hover:border-primary/40 transition-all"
-        {...cardProps(navigate, '/profile')}
+        {...cardProps(navigate, '/remediation')}
       >
         <div className="flex items-center justify-between mb-2">
           <p className="text-sm text-gray-500">偏差指数</p>

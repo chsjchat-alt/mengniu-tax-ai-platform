@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { AlertOutlined } from '@ant-design/icons';
 import { useEnterpriseStore } from '@/store';
-import { simulationApi, complianceApi } from '@/api';
+import { simulationApi } from '@/api';
 import {
   SimulationInputForm,
   LossFrameMessage,
@@ -185,22 +185,15 @@ function Simulator() {
     if (!enterpriseId) return;
     setLoading(true);
     try {
-      const [simRes, nbtRes] = await Promise.all([
-        simulationApi.run(enterpriseId, {
-          monthly_hidden_revenue: monthlyRevenue * 10000,
-          comprehensive_tax_rate: taxRate / 100,
-          remediation_cost: remediationCost * 10000,
-        }),
-        complianceApi.nbtIntervention(enterpriseId, {
-          monthly_hidden_revenue: monthlyRevenue * 10000,
-          comprehensive_tax_rate: taxRate / 100,
-          remediation_cost: remediationCost * 10000,
-          risk_level: riskLevel,
-        }).catch(() => ({ data: { data: null } })),
-      ]);
+      const simRes = await simulationApi.run(enterpriseId, {
+        monthly_hidden_revenue: monthlyRevenue * 10000,
+        comprehensive_tax_rate: taxRate / 100,
+        remediation_cost: remediationCost * 10000,
+      });
       setResult(simRes.data.data ?? null);
-      setTrudgeData(nbtRes.data.data?.trudge ?? null);
-      setDynamicMix(nbtRes.data.data?.dynamic_mix ?? null);
+      // 一期边界（V4 §5.4）：NBT 干预已移除，trudgeData/dynamicMix 恒为空
+      setTrudgeData(null);
+      setDynamicMix(null);
     } catch {
       setResult(null);
       setTrudgeData(null);

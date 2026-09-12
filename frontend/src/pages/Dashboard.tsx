@@ -8,7 +8,6 @@ import {
   ThunderboltOutlined, ReloadOutlined,
 } from '@ant-design/icons';
 import { LoadingSpinner, EmptyState } from '@/components/common';
-import SSFQuadrantChart from '@/components/ssf';
 import { useDashboardData } from './dashboard/useDashboardData';
 import MetricCards from './dashboard/MetricCards';
 import ChartsSection from './dashboard/ChartsSection';
@@ -109,9 +108,6 @@ function Dashboard() {
             assessLoading={assessLoading}
             result={result}
           />
-
-          {/* ═══ SSF 博弈状态四象限定位 ═══ */}
-          <SSFQuadrantChart enterpriseId={enterpriseId || undefined} />
 
           {/* ═══ 最近扫描记录 ═══ */}
           <ScanHistory assessments={assessments} />

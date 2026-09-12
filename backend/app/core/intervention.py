@@ -1,7 +1,7 @@
 """
-心理干预策略引擎
+整改干预策略引擎
 
-基于行为经济学的五层递进式心理干预机制，针对企业的认知偏差设计结构化干预策略。
+基于行为经济学的五层递进式干预机制，针对企业的合规风险状态设计结构化干预策略。
 
 五层干预：
   第一层：打破乐观偏差   —— 前景理论，纠正概率判断偏差
@@ -10,18 +10,13 @@
   第四层：缓解认知失调   —— 认知失调理论，提供合理化出口
   第五层：锚定长期预期   —— 心理账户理论，建立合规账户 vs 违规账户
 
-优先级调整：根据主导偏差类型调整五层干预的执行顺序。
+优先级调整：根据传入的偏差 key 列表调整五层干预的执行顺序。
 
 商业语言输出：可直接展示给老板的干预话术
 技术语言输出：干预策略的结构化描述
 """
 
 from pydantic import BaseModel, Field
-
-from app.core.profile_engine import BIAS_CN
-
-# 反向映射：中文→英文，供 _adjust_priority 双向查找
-BIAS_EN = {v: k for k, v in BIAS_CN.items()}
 
 
 # ── 五层干预策略内容模板 ──
@@ -183,10 +178,9 @@ def _adjust_priority(dominant_biases: list[str]) -> list[int]:
     }
 
     # 将中文名转回英文 key（如果已经是英文则保持原样）
+    # 一期边界（V4 §5.4）：画像推断已移除，dominant_biases 仅接受英文 key 直传
     def _resolve(b: str) -> str:
-        if b in bias_to_layer:
-            return b
-        return BIAS_EN.get(b, b)
+        return b if b in bias_to_layer else b
 
     base_order = list(range(1, 6))
 
@@ -292,7 +286,7 @@ def _generate_business_narrative(result: InterventionResult, data: InterventionI
     ]
 
     if data.dominant_biases:
-        names = [BIAS_CN.get(b, b) for b in data.dominant_biases]
+        names = list(data.dominant_biases)
         parts.append(f"主导偏差：{'、'.join(names)}")
     parts.append("")
 

@@ -22,7 +22,6 @@ from app.core.four_flow_match import (
     ContractRecord, InvoiceRecord, BankTransactionRecord,
 )
 from app.core.risk_engine import assess_enterprise_risk, EnterpriseRiskInput
-from app.core.profile_engine import calculate_psychological_profile, BehavioralData
 from app.core.penalty_calculator import (
     calculate_compound_penalty_exposure,
     UnpaidTaxInput,
