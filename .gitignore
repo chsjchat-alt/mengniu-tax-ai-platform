@@ -1,0 +1,50 @@
+# 税智·心判 ─ 项目忽略规则
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+*.db
+db/
+.env
+.env.local
+.env.*.local
+.venv/
+venv/
+.idea/
+.vscode/
+*.sqlite3
+
+# 前端
+node_modules/
+frontend/coverage/
+frontend/dist/
+frontend/vitest-report.json
+frontend/vitest-summary.txt
+*.tsbuildinfo
+
+# 后端生成物
+backend/htmlcov/
+backend/.pytest_cache/
+backend/.coverage
+htmlcov/
+.pytest_cache/
+.coverage
+
+# 大体积媒体与二进制材料（不入库：赛事材料/演示视频/PPT）
+赛事要求/
+*.mp4
+*.pptx
+*.docx
+
+# 本地工作区与临时文件
+.workbuddy/
+tmp_*
+.claude/
+
+# Swagger 静态资源由 download_static.py 拉取，不入库
+backend/static/
+
+# 系统文件
+.DS_Store
+Thumbs.db
