@@ -1,7 +1,0 @@
-feat: 税智·心判 v0.3.0 — 蒙牛AI创新赛迭代版
-
-Rule ID 法规治理矩阵（六级优先级/生效窗口/复核闸门）
-乳业农产品核定扣除引擎（全 Decimal 金额运算 + zen 决策表路由）
-四流稽核增强（Jaccard + rapidfuzz 双分数对照）
-审计证据链（calc_id 确定性指纹 + 参数快照）
-开源集成选型记录见 docs/OPEN_SOURCE_INTEGRATION.md
