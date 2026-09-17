@@ -81,7 +81,7 @@ class ReportPDF(FPDF):
             return  # 封面不显示页眉
         self.set_font("zh", "", 8)
         self.set_text_color(150, 150, 150)
-        self.cell(0, 5, "税智·心判 — 财税合规风险评估报告", align="L")
+        self.cell(0, 5, "蒙牛全产业链 AI 内生合规决策大脑 — 财税合规风险评估报告", align="L")
         self.cell(0, 5, "内部资料 · 注意保密", align="R", new_x="LMARGIN", new_y="NEXT")
         self.line(self.l_margin, self.get_y() + 1, self.w - self.r_margin, self.get_y() + 1)
         self.ln(4)
@@ -289,7 +289,7 @@ def generate_report_pdf(report_content: dict) -> bytes:
     pdf.set_font("zh", "", 8)
     pdf.set_text_color(150, 150, 150)
     pdf.multi_cell(0, 5,
-        "本报告由「税智·心判」系统自动生成，数据来源于企业内部财务系统及模拟数据。\n"
+        "本报告由「蒙牛全产业链 AI 内生合规决策大脑」系统自动生成，数据来源于企业内部财务系统及模拟数据。\n"
         "报告中的风险评级、心理画像分析及整改建议均为系统基于预设规则的自动分析结果，\n"
         "不构成具有法律效力的专业意见。企业应根据实际情况咨询注册税务师或律师。\n"
         "系统运营方不对因使用本报告而产生的任何直接或间接损失承担责任。"

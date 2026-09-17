@@ -5,7 +5,7 @@ from fastapi import HTTPException
 
 
 class TaxMindException(Exception):
-    """税智·心判基础异常"""
+    """蒙牛全产业链 AI 内生合规决策大脑基础异常"""
     def __init__(self, code: int = 50000, message: str = "服务器内部错误"):
         self.code = code
         self.message = message
