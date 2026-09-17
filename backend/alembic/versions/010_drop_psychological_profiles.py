@@ -6,7 +6,7 @@ Create Date: 2026-09-12
 
 V4 §5.4 明确边界：不做侵入式心理画像，不采用「心理干预」叙事；
 一期仅采用微任务、积分、提醒等外部可观测的行为机制。
-本迁移移除原 TaxMind 遗留的心理画像表，使 schema 与方案边界一致。
+本迁移移除遗留的心理画像表，使 schema 与方案边界一致。
 """
 from typing import Sequence, Union
 

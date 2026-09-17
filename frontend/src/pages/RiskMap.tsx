@@ -10,7 +10,7 @@ import {
   RISK_COLORS, RISK_LABELS, AUDIT_PROBABILITY_CRITICAL,
   BUSINESS_MODEL_MAP, BUSINESS_MODEL_DESC,
 } from '@/types';
-import type { RiskLevel, BusinessModel, CostGaugeData, TaxBurdenElasticityData, ICRadarData, NBTInterventionResult, MatchDetailItem, RiskScoreTrajectory, ComplianceAdjustedRisk } from '@/types';
+import type { RiskLevel, BusinessModel, CostGaugeData, TaxBurdenElasticityData, ICRadarData, MatchDetailItem, RiskScoreTrajectory, ComplianceAdjustedRisk } from '@/types';
 import type { Language } from '@/components/riskmap';
 
 // ═══════════════════════════════════════
@@ -107,7 +107,6 @@ const DIM_NAMES: Record<string, string> = {
 function deriveICRadarData(
   enterprise: { industry: string; cost_rate_claimed: number; tax_rate_claimed: number; revenue_annual: number } | null,
   result: { overall_risk_level: string; overall_risk_score: number; dimension_scores: Record<string, number> } | null,
-  nbtData: NBTInterventionResult | null,
   complianceReduction = 0,
   isFullyCompliant = false,
 ): ICRadarData {
@@ -136,8 +135,7 @@ function deriveICRadarData(
     { period: 'Q4', revenueGrowth: 18.2, taxBurdenRate: Number((actualTaxRate * 0.45).toFixed(2)), expectedTaxBurden: industryTaxRate },
   ];
 
-  const nudgeRiskStatement = nbtData?.nudge?.risk_statement ?? '';
-  const hasICFailure = nudgeRiskStatement.includes('预警') || nudgeRiskStatement.includes('94%') || taxBurdenScore >= 80;
+  const hasICFailure = taxBurdenScore >= 80;
 
   const riskLevel = isFullyCompliant ? 'low' : (result?.overall_risk_level ?? 'low');
   const rawAuditProb =
@@ -181,9 +179,6 @@ function RiskMap() {
   const { currentEnterprise } = useEnterpriseStore();
   const { result, isBusy, scanRisk, fetchLatest } = useRiskViewState();
   const [language, setLanguage] = useState<Language>('business');
-  // 一期边界（V4 §5.4）：NBT 心理干预已移除，恒为空（条件渲染自然走空分支）
-  const nbtData = null as NBTInterventionResult | null;
-  const nbtLoading = false;
   // 合规调整数据（跨模块联动：统一消费后端 compute_compliance_adjusted_risk 结果）
   const [complianceAdj, setComplianceAdj] = useState<ComplianceAdjustedRisk | null>(null);
   // 匹配明细筛选：仅显示未匹配项
@@ -223,8 +218,8 @@ function RiskMap() {
   );
 
   const icRadar = useMemo(
-    () => deriveICRadarData(currentEnterprise ?? null, result, nbtData, complianceReduction, isFullyCompliant),
-    [currentEnterprise, result, nbtData, complianceReduction, isFullyCompliant],
+    () => deriveICRadarData(currentEnterprise ?? null, result, complianceReduction, isFullyCompliant),
+    [currentEnterprise, result, complianceReduction, isFullyCompliant],
   );
 
   // ── 合规调整后的风险评分和等级（统一收口：直接消费后端 compliance，前端不再自行推导）──
@@ -760,29 +755,6 @@ function RiskMap() {
               </TableContainer>
             </div>
           )}
-
-          {/* 高压补充 — 损失框架 */}
-          {isCritical && nbtData?.budge && (
-            <div className="rounded-2xl border border-red-600 bg-red-500 p-5 sm:p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-5 rounded-full bg-white" />
-                <h3 className="text-base font-semibold text-white">损失框架对比分析</h3>
-              </div>
-              <div className="space-y-4">
-                <div className="bg-red-600/40 rounded-xl p-4 border border-red-400/30">
-                  <p className="text-sm text-white leading-relaxed whitespace-pre-line">
-                    {nbtData.budge.loss_comparison}
-                  </p>
-                </div>
-                <div className="bg-red-600/40 rounded-xl p-4 border border-red-400/30">
-                  <h4 className="text-xs font-semibold text-red-200 mb-1 uppercase">破除逃避心理</h4>
-                  <p className="text-sm text-red-100 leading-relaxed">
-                    {nbtData.budge.rebuttal_narrative}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </>
       )}
 
@@ -827,7 +799,7 @@ function RiskMap() {
             </span>
           </div>
 
-          {/* 宏观内控雷达监测区 — 完整版（含 NBT 预警） */}
+          {/* 宏观内控雷达监测区 */}
           <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6">
             <h3 className="text-base font-semibold text-gray-700 mb-5">宏观内控雷达监测</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -844,23 +816,6 @@ function RiskMap() {
                 <TaxBurdenElasticityChart data={icRadar.taxBurdenElasticity} isCritical={false} />
               </div>
             </div>
-
-            {isCritical && nbtData?.nudge && (
-              <div className="mt-5 p-4 bg-red-50 rounded-xl border border-red-200">
-                <p className="text-sm text-red-700 font-medium leading-relaxed">
-                  {nbtData.nudge.risk_statement}
-                </p>
-                <p className="text-xs text-red-500 mt-2 leading-relaxed">
-                  {nbtData.nudge.psychological_trigger}
-                </p>
-              </div>
-            )}
-
-            {nbtLoading && (
-              <div className="mt-5 text-center">
-                <span className="text-xs text-gray-400">正在加载行为干预分析...</span>
-              </div>
-            )}
           </div>
 
           {/* 7 维度技术详情网格 */}
@@ -1013,29 +968,6 @@ function RiskMap() {
               </div>
             </div>
           </div>
-
-          {/* 损失框架（高压） */}
-          {isCritical && nbtData?.budge && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-5 sm:p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-5 rounded-full bg-red-500" />
-                <h3 className="text-base font-semibold text-red-800">损失框架对比分析</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="bg-white rounded-xl p-4 border border-red-100">
-                  <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                    {nbtData.budge.loss_comparison}
-                  </p>
-                </div>
-                <div className="bg-white rounded-xl p-4 border border-red-100">
-                  <h4 className="text-xs font-semibold text-red-600 mb-1">破除逃避心理</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {nbtData.budge.rebuttal_narrative}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* 技术摘要 */}
           {result.technical_summary && (

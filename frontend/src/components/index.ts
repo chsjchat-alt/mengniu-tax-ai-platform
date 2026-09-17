@@ -1,10 +1,9 @@
 // 组件导出入口
-export { RiskBadge, StatCard, LoadingSpinner, EmptyState, Disclaimer } from './common';
+export { RiskBadge, StatCard, LoadingSpinner, EmptyState } from './common';
 export {
   RiskRadar,
   RiskBarChart,
   FourFlowGauge,
-  ProfileRadarChart,
   SimulationComparisonChart,
   RiskPieChart,
   RiskTrendChart,

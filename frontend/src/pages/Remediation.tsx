@@ -35,7 +35,7 @@ function Remediation() {
   // 改善反馈数据
   const [initialScore, setInitialScore] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
-  const [deviationTrend, setDeviationTrend] = useState<{ date: string; index: number }[]>([]);
+  const [scoreTrend, setDeviationTrend] = useState<{ date: string; index: number }[]>([]);
 
   // ── 合规校验 ──
   const [complianceResult, setComplianceResult] = useState<ComplianceCheckResult | null>(null);
@@ -587,7 +587,7 @@ function Remediation() {
           <ImprovementFeedback
             initialScore={initialScore}
             currentScore={currentScore}
-            deviationTrend={deviationTrend}
+            scoreTrend={scoreTrend}
           />
         </div>
       )}

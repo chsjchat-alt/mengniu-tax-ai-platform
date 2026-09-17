@@ -43,12 +43,11 @@ pytest 配置位于 [backend/pytest.ini](backend/pytest.ini)，默认行为：
 - **自动忽略** `tests/test_simulation_engine.py`：该文件导入不存在的
   `PENALTY_MULTIPLIERS` 属存量 collection error，会中断整个测试流程；
   修复后应从 `pytest.ini` 的 `--ignore` 中移除。
-- **自动开启覆盖率统计**（pytest-cov），针对三个核心引擎模块：
+- **自动开启覆盖率统计**（pytest-cov），针对两个核心引擎模块：
 
   | 模块 | 说明 |
   |---|---|
   | `app.core.tax_risk_engine` | 五维全景税务风险评估引擎 |
-  | `app.core.ssf_analyzer` | SSF 博弈状态分析引擎 |
   | `app.core.compliance_checker` | 财务数据合规校验引擎 |
 
 ### 1.3 只运行指定测试
@@ -58,7 +57,7 @@ pytest 配置位于 [backend/pytest.ini](backend/pytest.ini)，默认行为：
 python -m pytest tests/test_tax_risk_engine.py
 
 # 单个用例
-python -m pytest tests/test_ssf_analyzer.py::TestComputeTrustCoord
+python -m pytest tests/test_compliance_checker.py -k 高企
 ```
 
 ### 1.4 覆盖率报告
@@ -70,12 +69,11 @@ python -m pytest tests/test_ssf_analyzer.py::TestComputeTrustCoord
   backend/htmlcov/index.html
   ```
 
-- 目标覆盖率（三个引擎模块核心函数）为 **≥ 80%**，当前状态：
+- 目标覆盖率（核心引擎模块关键函数）为 **≥ 80%**，当前状态：
 
   | 模块 | 覆盖率 |
   |---|---|
   | compliance_checker | 100% |
-  | ssf_analyzer | 100% |
   | tax_risk_engine | 98% |
 
 ### 1.5 已知存量问题（非本次改动引入）

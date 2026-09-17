@@ -137,4 +137,4 @@ calc_id = SHA-256( 规范JSON{ rule_ids, graph_sha256, context, on_date, engine_
 
 - 新增测试 46 个全部通过（`test_rule_governance.py` 15 个 + `test_deemed_deduction.py` 31 个）；
 - 全量回归 `pytest tests`：**484 passed, 8 skipped, 0 failed**（skip 为需真实 PostgreSQL 的用例）；
-- 覆盖率：ssf_analyzer 100% / compliance_checker 100% / tax_risk_engine 98%。
+- 覆盖率：compliance_checker 100% / tax_risk_engine 98%。

@@ -19,7 +19,6 @@ function Dashboard() {
     result, isBusy, busyText, scanRisk, loadAllData,
     handleLoadMockData, loadingMock,
     trendData, assessments, assessLoading, pendingTasks,
-    deviationIndex, deviationBaseline,
     adjustedRiskLevel, adjustedRiskScore, originalRiskScore, isLoading,
   } = useDashboardData();
 
@@ -90,14 +89,12 @@ function Dashboard() {
         <LoadingSpinner text={busyText} />
       ) : result ? (
         <>
-          {/* ═══ 4个核心指标卡片（可点击跳转） ═══ */}
+          {/* ═══ 3个核心指标卡片（可点击跳转） ═══ */}
           <MetricCards
             adjustedRiskLevel={adjustedRiskLevel}
             adjustedRiskScore={adjustedRiskScore}
             originalRiskScore={originalRiskScore}
             fourFlowMatchScore={result.four_flow_match_score}
-            deviationIndex={deviationIndex}
-            deviationBaseline={deviationBaseline}
             pendingTasks={pendingTasks}
           />
 

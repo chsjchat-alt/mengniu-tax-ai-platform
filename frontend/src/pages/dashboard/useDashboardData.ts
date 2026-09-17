@@ -6,12 +6,11 @@
  *   - 一键加载模拟数据
  *   - 派生：趋势数据、合规调整后的风险等级与评分
  *
- * 一期边界（V4 §5.4）：不再拉取心理画像，deviationIndex 恒为 null。
+ * 一期边界（V4 §5.4）：不做心理画像，偏差指数已移除。
  */
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useEnterpriseStore, useRiskViewState } from '@/store';
 import { dataApi, riskScanApi, remediationApi } from '@/api';
-import { DEVIATION_BASELINE } from '@/types';
 import type { RiskAssessment } from '@/types';
 
 export function useDashboardData() {
@@ -26,9 +25,6 @@ export function useDashboardData() {
   const [assessments, setAssessments] = useState<RiskAssessment[]>([]);
   const [assessLoading, setAssessLoading] = useState(false);
   const [pendingTasks, setPendingTasks] = useState(0);
-  // 一期边界（V4 §5.4）：心理画像已移除，偏差指数不再提供
-  const [deviationIndex] = useState<number | null>(null);
-  const [deviationBaseline] = useState<number>(DEVIATION_BASELINE);
 
   const enterpriseId = currentEnterprise?.id;
 
@@ -118,8 +114,6 @@ export function useDashboardData() {
     assessments,
     assessLoading,
     pendingTasks,
-    deviationIndex,
-    deviationBaseline,
     adjustedRiskLevel,
     adjustedRiskScore,
     originalRiskScore,

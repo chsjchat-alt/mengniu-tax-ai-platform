@@ -450,7 +450,7 @@ import os; print('DEEPSEEK_API_KEY set:', bool(os.getenv('DEEPSEEK_API_KEY')))
 "
 ```
 
-**说明**：未配置 API Key 时，系统降级为 Mock 模式，不影响核心功能（风险扫描、心理画像、模拟引擎）使用。
+**说明**：未配置 API Key 时，系统降级为 Mock 模式，不影响核心功能（风险扫描、合规干预、模拟引擎）使用。
 
 ### 8.8 重置到初始状态
 

@@ -145,7 +145,7 @@ describe('Dashboard — 数据展示（API mock 成功 + store 注入 result）'
     mockApiSuccess()
   })
 
-  it('有数据 → 显示 4 个核心指标卡片', async () => {
+  it('有数据 → 显示 3 个核心指标卡片', async () => {
     // loadAllData 会调用 scanRisk → 通过 mock 返回数据，覆盖 store 状态
     vi.mocked(riskScanApi.scan).mockResolvedValue(apiOk(makeRiskResult()))
     useEnterpriseStore.setState({ currentEnterprise: makeEnterprise() })
@@ -154,7 +154,6 @@ describe('Dashboard — 数据展示（API mock 成功 + store 注入 result）'
     await waitFor(() => {
       expect(screen.getByText('总体风险等级')).toBeInTheDocument()
       expect(screen.getByText('四流匹配度')).toBeInTheDocument()
-      expect(screen.getByText('偏差指数')).toBeInTheDocument()
       expect(screen.getByText('待办整改任务')).toBeInTheDocument()
     })
   })
@@ -170,19 +169,6 @@ describe('Dashboard — 数据展示（API mock 成功 + store 注入 result）'
     const riskCard = screen.getByText('总体风险等级').closest('[class*="cursor-pointer"]')!
     fireEvent.click(riskCard)
     expect(mockNavigate).toHaveBeenCalledWith('/risk-map')
-  })
-
-  it('偏差指数卡片 → 点击跳转 /remediation', async () => {
-    vi.mocked(riskScanApi.scan).mockResolvedValue(apiOk(makeRiskResult()))
-    useEnterpriseStore.setState({ currentEnterprise: makeEnterprise() })
-    renderDashboard()
-
-    await waitFor(() => {
-      expect(screen.getByText('偏差指数')).toBeInTheDocument()
-    })
-    const deviationCard = screen.getByText('偏差指数').closest('[class*="cursor-pointer"]')!
-    fireEvent.click(deviationCard)
-    expect(mockNavigate).toHaveBeenCalledWith('/remediation')
   })
 
   it('高风险企业 → 显示对应颜色和标签', async () => {
